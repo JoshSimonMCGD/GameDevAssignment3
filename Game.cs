@@ -8,6 +8,10 @@ public class Game
 {
 
     SafeZone[] safeZones;
+    
+    float flowerSpawnTime = 0;
+    float flowerSpawnInterval = Random.Float(2f, 6f); // Adjust this to control spawn frequency
+    int maxFlowers = 10; // Max number of flowers on screen
 
     float _timeofday;
 
@@ -47,7 +51,7 @@ public class Game
     // Floats
     float PlayerMovementX = 100f;
     float PlayerMovementY = 100f;
-    float PlayerSpeed = 3.5f;
+    float PlayerSpeed = 3f;
 
     public void Setup()
     {
@@ -55,18 +59,18 @@ public class Game
         Window.SetSize(800, 600);
 
         Draw.LineSize = 1;
-
+        
         FlowerPositionX = new int[FlowerCount];
         for (int i = 0; i < FlowerCount; i++)
         {
-            FlowerPositionX[i] = Random.Integer(210, 560);
+            FlowerPositionX[i] = -1; // Mark as empty
         }
 
         Audio.Play(Day1FX);
 
         safeZones = new SafeZone[2];
 
-        safeZones[0] = new SafeZone(80, 60);
+        safeZones[0] = new SafeZone(70, 70);
         safeZones[1] = new SafeZone(650, 80);
     }
 
@@ -180,14 +184,31 @@ public class Game
         Draw.Circle(640, 500, 4);
         Draw.Circle(730, 500, 4);
 
-        if (TOD >= 2.7)
+        // Update flower spawn timer
+        flowerSpawnTime += Time.DeltaTime;
+
+        if (flowerSpawnTime >= flowerSpawnInterval && TOD >= 2.7)
         {
-            //if (FlowerSpawnRate >= 29)
+            // Reset the spawn timer
+            flowerSpawnTime = 0;
+
+            // Find an empty spot in the flower array
+            for (int i = 0; i < FlowerCount; i++)
             {
-                for (int i = 0; i < FlowerCount; i++)
+                if (FlowerPositionX[i] == -1) // Check for an "empty" slot
                 {
-                    Graphics.Draw(Flower, FlowerPositionX[i], 500);
+                    FlowerPositionX[i] = Random.Integer(210, 560);
+                    break;
                 }
+            }
+        }
+        
+        // Draw the flowers
+        for (int i = 0; i < FlowerCount; i++)
+        {
+            if (FlowerPositionX[i] != -1) // Only draw flowers at valid positions
+            {
+                Graphics.Draw(Flower, FlowerPositionX[i], 500);
             }
         }
 
@@ -224,10 +245,10 @@ public class Game
                 if (Input.IsKeyboardKeyDown(KeyboardInput.R))
                 {
                     isDead = false;
-                    Setup(); // Restart the game
+                    PlayerMovementX = 100f;  // Reset player position
+                    _timeofday = 0;          // Reset time of day
+                    Setup();                 // Reinitialize the game
                 }
-
-                return;
             }
         }
     }
