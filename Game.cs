@@ -16,6 +16,8 @@ public class Game
     int FlowerCount = 10;
     int[] FlowerPositionX;
     
+    bool isPlaying = false;
+    
     // Texture Assets
     Texture2D Background = Graphics.LoadTexture("../../../Assets/BackgroundForest.png");
     Texture2D Trees = Graphics.LoadTexture("../../../Assets/HidingTrees.png");
@@ -24,13 +26,13 @@ public class Game
     Texture2D Grass = Graphics.LoadTexture("../../../Assets/Grass.png");
     
     // Audio Assets
-    Sound WalkingFX = Audio.LoadSound("../../../Assets/move.wav");
+    Sound WalkingFX = Audio.LoadSound("../../../Assets/Audio/Movement.wav");
     Sound DayFX = Audio.LoadSound("../../../Assets/move.wav");
     Sound NightFX = Audio.LoadSound("../../../Assets/move.wav");
     Sound FlowerSpawnFX = Audio.LoadSound("../../../Assets/move.wav");
     Sound FlowerPickFX = Audio.LoadSound("../../../Assets/move.wav");
     
-    // Vactors
+    // Vectors
     Vector2 position1 = new Vector2(0, 0);
     
     float PlayerMovementX = 100f;
@@ -52,6 +54,7 @@ public class Game
     }
     public void Update()
     {
+        bool isMoving = false;
         
         float BGX = 0;
         float BGY = 600;
@@ -64,9 +67,29 @@ public class Game
         int FlowerSpawnRate = Random.Integer(0, 30);
 
         if (Input.IsKeyboardKeyDown(KeyboardInput.D))
+        {
             PlayerMovementX += PlayerSpeed;  // Move right
+            isMoving = true;
+        }
+
         if (Input.IsKeyboardKeyDown(KeyboardInput.A))
+        {
             PlayerMovementX -= PlayerSpeed;  // Move left
+            isMoving = true;
+        }
+        // Play the sound only if moving and not already playing
+        if (isMoving && !isPlaying)
+        {
+            Audio.Play(WalkingFX);
+            isPlaying = true;
+        }
+
+        // Stop the sound if no movement keys are pressed
+        if (!isMoving && isPlaying)
+        {
+            Audio.Stop(WalkingFX);
+            isPlaying = false;
+        }
             
         // Color Variables
         // Sky
