@@ -19,8 +19,9 @@ public class Game
     Texture2D Background = Graphics.LoadTexture("../../../Assets/BackgroundForest.png");
     Texture2D Trees = Graphics.LoadTexture("../../../Assets/HidingTrees.png");
     Texture2D Player = Graphics.LoadTexture("../../../Assets/PlayerCharacter.png");
-    Texture2D Flower = Graphics.LoadTexture("../../../Assets/800x600_Wallpaper_Blue_Sky.png");     
-        
+    Texture2D Flower = Graphics.LoadTexture("../../../Assets/Flower.png");     
+    Texture2D Grass = Graphics.LoadTexture("../../../Assets/Grass.png");
+    
     // Vactors
     Vector2 position1 = new Vector2(0, 0);
     
@@ -86,20 +87,15 @@ public class Game
         
         Graphics.Draw(Trees, position1);
         
+        Graphics.Draw(Grass, position1);
+        
         if (TOD >= 6)
         {
             //if (FlowerSpawnRate >= 29)
             {
                 for (int i = 0; i < FlowerCount; i++)
                 {
-                    Draw.FillColor = Color.Green;
-                    Draw.Rectangle(FlowerPositionX[i] - 1, 530, 3, 40);
-                    
-                    Draw.FillColor = Color.Red;
-                    Draw.Circle(FlowerPositionX[i], 530, 15); 
-                    
-                    Draw.FillColor = Color.Yellow;
-                    Draw.Circle(FlowerPositionX[i], 530, 7);
+                    Graphics.Draw(Flower, FlowerPositionX[i], 500);
                 }
             }
         }
