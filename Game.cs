@@ -11,6 +11,13 @@ namespace MohawkGame2D
     public class Game
     {
         // Place your variables here:
+        
+        float _timeofday;
+        
+        // Framecount Variable.
+        int frameCount = 0;
+        
+        
 
 
         /// <summary>
@@ -18,7 +25,8 @@ namespace MohawkGame2D
         /// </summary>
         public void Setup()
         {
-
+            Window.SetTitle("Dark Forest Quest");
+            Window.SetSize(800, 600);
         }
 
         /// <summary>
@@ -26,7 +34,30 @@ namespace MohawkGame2D
         /// </summary>
         public void Update()
         {
-
+            _timeofday += Time.DeltaTime;
+            
+            
+            if (_timeofday >= 12)
+            {
+                _timeofday = 0;
+                //_timeofday -= Time.DeltaTime;
+            }
+            
+            // if (_timeofday >= 24)
+            {
+                // _timeofday = 0;
+            }
+            
+            // Color Variables
+            // Sky
+            float r = 0.0f;
+            float g = _timeofday / 18;
+            float b = _timeofday / 12;
+            float c = _timeofday / 12;
+            
+            // Background
+            ColorF bgColor = new ColorF(r, g, b, c);
+            Window.ClearBackground(bgColor);
         }
     }
 
