@@ -17,6 +17,7 @@ public class Game
 
     // Framecount Variable.
     int frameCount = 0;
+    int Score = 0;
 
     float BGX = 0;
     float BGY = 600;
@@ -213,6 +214,29 @@ public class Game
         }
 
         Graphics.Draw(Grass, position1);
+
+        Draw.FillColor = Color.White;
+        Text.Draw("Score: " + Score, 600, 30);
+        
+        // Check for flower collection
+        for (int i = 0; i < FlowerCount; i++)
+        {
+            if (FlowerPositionX[i] != -1) // Check only active flowers
+            {
+                // Check if player touches the flower
+                if (Math.Abs(PlayerMovementX - FlowerPositionX[i]) < 17) // Adjust to change flower hitbox
+                {
+                    // Play flower collection sound
+                    Audio.Play(FlowerPickFX);
+            
+                    // Increase score
+                    Score++;
+
+                    // Remove flower by marking it as inactive
+                    FlowerPositionX[i] = -1;
+                }
+            }
+        }
 
         // Check for player safety at night
         if (TOD <= 2.3)
