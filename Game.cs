@@ -16,7 +16,12 @@ public class Game
     int FlowerCount = 10;
     int[] FlowerPositionX;
     
+    // Bools
     bool isPlaying = false;
+    bool isPlaying2 = false;
+    bool isDay = true;
+    bool isNight = false;
+    
     
     // Texture Assets
     Texture2D Background = Graphics.LoadTexture("../../../Assets/BackgroundForest.png");
@@ -27,14 +32,15 @@ public class Game
     
     // Audio Assets
     Sound WalkingFX = Audio.LoadSound("../../../Assets/Audio/Movement.wav");
-    Sound DayFX = Audio.LoadSound("../../../Assets/move.wav");
-    Sound NightFX = Audio.LoadSound("../../../Assets/move.wav");
-    Sound FlowerSpawnFX = Audio.LoadSound("../../../Assets/move.wav");
+    Sound DayFX = Audio.LoadSound("../../../Assets/Audio/DayFX.wav");
+    Sound NightFX = Audio.LoadSound("../../../Assets/Audio/NightFX.wav");
+    Sound Day1FX = Audio.LoadSound("../../../Assets/Audio/Day1FX.wav");
     Sound FlowerPickFX = Audio.LoadSound("../../../Assets/move.wav");
     
     // Vectors
     Vector2 position1 = new Vector2(0, 0);
     
+    // Floats
     float PlayerMovementX = 100f;
     float PlayerMovementY = 100f;
     float PlayerSpeed = 3.5f;
@@ -51,6 +57,8 @@ public class Game
             {
                 FlowerPositionX[i] = Random.Integer(210, 560);
             }
+            
+            Audio.Play(Day1FX);
     }
     public void Update()
     {
@@ -90,6 +98,15 @@ public class Game
             Audio.Stop(WalkingFX);
             isPlaying = false;
         }
+        
+        if (TOD >= 4)
+        {
+            Audio.Play(NightFX);
+        }
+        if (TOD <= 4)
+        {
+            Audio.Play(DayFX);
+        }    
             
         // Color Variables
         // Sky
@@ -143,7 +160,7 @@ public class Game
         
         Graphics.Draw(Trees, position1);
         
-        if (TOD >= 6)
+        if (TOD >= 2.7)
         {
             //if (FlowerSpawnRate >= 29)
             {
