@@ -31,6 +31,7 @@ public class Game
     bool isDay = true;
     bool isNight = false;
     bool isDead = false;
+    bool isVictory = false;
 
     // Texture Assets
     Texture2D Background = Graphics.LoadTexture("../../../Assets/BackgroundForest.png");
@@ -44,7 +45,8 @@ public class Game
     Sound DayFX = Audio.LoadSound("../../../Assets/Audio/DayFX.wav");
     Sound NightFX = Audio.LoadSound("../../../Assets/Audio/NightFX.wav");
     Sound Day1FX = Audio.LoadSound("../../../Assets/Audio/Day1FX.wav");
-    Sound FlowerPickFX = Audio.LoadSound("../../../Assets/move.wav");
+    Sound FlowerPickFX = Audio.LoadSound("../../../Assets/Audio/FlowerPick.wav");
+    Sound FlowerSpawnFX = Audio.LoadSound("../../../Assets/Audio/FlowerSpawn.wav");
 
     // Vectors
     Vector2 position1 = new Vector2(0, 0);
@@ -71,7 +73,7 @@ public class Game
 
         safeZones = new SafeZone[2];
 
-        safeZones[0] = new SafeZone(70, 70);
+        safeZones[0] = new SafeZone(70, 80);
         safeZones[1] = new SafeZone(650, 80);
     }
 
@@ -178,12 +180,13 @@ public class Game
         Graphics.Draw(Player, PlayerMovementX, 470);
 
         Graphics.Draw(Trees, position1);
-
-        Draw.FillColor = Color.Yellow;
-        Draw.Circle(80, 500, 4);
-        Draw.Circle(140, 500, 4);
-        Draw.Circle(640, 500, 4);
-        Draw.Circle(730, 500, 4);
+        
+        // References for SaveZone Hitboxes
+        //Draw.FillColor = Color.Yellow;
+        //Draw.Circle(80, 500, 4);
+        //Draw.Circle(140, 500, 4);
+        //Draw.Circle(640, 500, 4);
+        //Draw.Circle(730, 500, 4);
 
         // Update flower spawn timer
         flowerSpawnTime += Time.DeltaTime;
@@ -234,8 +237,34 @@ public class Game
 
                     // Remove flower by marking it as inactive
                     FlowerPositionX[i] = -1;
+                    
+                    // Check for victory condition
+                    if (Score >= 30)
+                    {
+                        isVictory = true;
+                    }
                 }
             }
+        }
+        if (isVictory)
+        {
+            Audio.Stop(DayFX);
+            Draw.FillColor = Color.Green;
+            Draw.Rectangle(0, 0, 800, 600); // Full screen rectangle
+            Draw.FillColor = Color.White;
+            Text.Draw("Victory! You collected 30 flowers!", 200, 300);
+            Text.Draw("Press R to Restart", 300, 350);
+    
+            // Restart the game if the player presses 'R'
+            if (Input.IsKeyboardKeyDown(KeyboardInput.R))
+            {
+                isVictory = false;
+                Score = 0;
+                PlayerMovementX = 100f;  // Reset player position
+                _timeofday = 0;          // Reset time of day
+                Setup();                 // Reinitialize the game
+            }
+            return;
         }
 
         // Check for player safety at night
@@ -259,6 +288,7 @@ public class Game
             if (isDead)
             {
                 _timeofday = -10;
+                Score = 0;
                 Audio.Stop(NightFX);
                 Draw.FillColor = Color.Red;
                 Draw.Rectangle(0, 0, 800, 600); // Full screen rectangle
