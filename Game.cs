@@ -6,7 +6,6 @@ namespace MohawkGame2D;
 
 public class Game
 {
-
     SafeZone[] safeZones;
     
     float flowerSpawnTime = 0;
@@ -39,7 +38,9 @@ public class Game
     Texture2D Player = Graphics.LoadTexture("../../../Assets/PlayerCharacter.png");
     Texture2D Flower = Graphics.LoadTexture("../../../Assets/Flower.png");
     Texture2D Grass = Graphics.LoadTexture("../../../Assets/Grass.png");
-
+    Texture2D VictoryScreen = Graphics.LoadTexture("../../../Assets/VictoryScreen.png");
+    Texture2D DeathScreen = Graphics.LoadTexture("../../../Assets/DeathScreen.png");
+    
     // Audio Assets
     Sound WalkingFX = Audio.LoadSound("../../../Assets/Audio/Movement.wav");
     Sound DayFX = Audio.LoadSound("../../../Assets/Audio/DayFX.wav");
@@ -52,8 +53,7 @@ public class Game
     Vector2 position1 = new Vector2(0, 0);
 
     // Floats
-    float PlayerMovementX = 100f;
-    float PlayerMovementY = 100f;
+    float PlayerMovementX = 300f;
     float PlayerSpeed = 3f;
 
     public void Setup()
@@ -81,15 +81,12 @@ public class Game
     {
         bool isMoving = false;
         bool isSafe = true;
-        float BGX = 0;
-        float BGY = 600;
 
         _timeofday += Time.DeltaTime / 1.2f;
 
         float TOD = 6 * (1 + (float)Math.Cos(Math.PI * _timeofday / 12));
-
+        
         float TOD2 = 6 * (1 - (float)Math.Cos(Math.PI * _timeofday / 12));
-        int FlowerSpawnRate = Random.Integer(0, 30);
 
         if (Input.IsKeyboardKeyDown(KeyboardInput.D))
         {
@@ -152,9 +149,11 @@ public class Game
 
         // Asset Tint
         ColorF bgTint = new ColorF(r2, g2, b2, c2);
-
         Graphics.Tint = bgTint;
         Graphics.Draw(Background, position1);
+        
+        // Remove Tint Color
+        ColorF RemoveTint = new ColorF(1f, 1f, 1f);
 
         if (TOD <= 2.5)
         {
@@ -181,7 +180,7 @@ public class Game
 
         Graphics.Draw(Trees, position1);
         
-        // References for SaveZone Hitboxes
+        // References for SafeZone Hitboxes
         //Draw.FillColor = Color.Yellow;
         //Draw.Circle(80, 500, 4);
         //Draw.Circle(140, 500, 4);
@@ -249,11 +248,9 @@ public class Game
         if (isVictory)
         {
             Audio.Stop(DayFX);
-            Draw.FillColor = Color.Green;
-            Draw.Rectangle(0, 0, 800, 600); // Full screen rectangle
-            Draw.FillColor = Color.White;
-            Text.Draw("Victory! You collected 30 flowers!", 200, 300);
-            Text.Draw("Press R to Restart", 300, 350);
+            Audio.Stop(NightFX);
+            Graphics.Tint = RemoveTint;
+            Graphics.Draw(VictoryScreen, position1);
     
             // Restart the game if the player presses 'R'
             if (Input.IsKeyboardKeyDown(KeyboardInput.R))
@@ -288,12 +285,11 @@ public class Game
             if (isDead)
             {
                 _timeofday = -10;
+                
                 Score = 0;
                 Audio.Stop(NightFX);
-                Draw.FillColor = Color.Red;
-                Draw.Rectangle(0, 0, 800, 600); // Full screen rectangle
-                Draw.FillColor = Color.White;
-                Text.Draw("You Died! Press R to Restart", 300, 300);
+                Graphics.Tint = RemoveTint;
+                Graphics.Draw(DeathScreen, position1);
 
                 // Restart the game if the player presses 'R'
                 if (Input.IsKeyboardKeyDown(KeyboardInput.R))
