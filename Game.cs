@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Numerics;
 namespace MohawkGame2D;
 
@@ -21,6 +22,13 @@ public class Game
     Texture2D Player = Graphics.LoadTexture("../../../Assets/PlayerCharacter.png");
     Texture2D Flower = Graphics.LoadTexture("../../../Assets/Flower.png");     
     Texture2D Grass = Graphics.LoadTexture("../../../Assets/Grass.png");
+    
+    // Audio Assets
+    Sound WalkingFX = Audio.LoadSound("../../../Assets/move.wav");
+    Sound DayFX = Audio.LoadSound("../../../Assets/move.wav");
+    Sound NightFX = Audio.LoadSound("../../../Assets/move.wav");
+    Sound FlowerSpawnFX = Audio.LoadSound("../../../Assets/move.wav");
+    Sound FlowerPickFX = Audio.LoadSound("../../../Assets/move.wav");
     
     // Vactors
     Vector2 position1 = new Vector2(0, 0);
@@ -48,7 +56,7 @@ public class Game
         float BGX = 0;
         float BGY = 600;
         
-        _timeofday += Time.DeltaTime;
+        _timeofday += Time.DeltaTime / 1.2f;
         
         float TOD = 6 * (1 + (float)Math.Cos(Math.PI * _timeofday / 12));
         
@@ -66,11 +74,18 @@ public class Game
         float g = TOD / 18;
         float b = TOD / 12;
         //float c = TOD / 12;
-
+        
+        // Asset Tint
         float r2 = TOD / 24;
         float g2 = TOD / 22 + 0.1f;
         float b2 = TOD / 26 + 0.2f;
         float c2 = 1.0f;
+        
+        // Monster Eyes
+        float r3 = 1.0f;
+        float g3 = TOD / 3;
+        float b3 = TOD / 12;
+        float c3 = 1.0f;
             
         // Background
         ColorF bgColor = new ColorF(r, g, b);
@@ -82,12 +97,28 @@ public class Game
         Graphics.Tint = bgTint;
         Graphics.Draw(Background, position1);
         
+        if (TOD <= 2.5)
+        {
+            Draw.FillColor = new ColorF(r3, g3, b3, c3);
+            Draw.Circle(270, 450, 4);
+            Draw.Circle(310, 450, 4);
+        }
+        if (TOD <= 2.3)
+        {
+            Draw.FillColor = new ColorF(r3, g3, b3, c3);
+            Draw.Circle(600, 430, 4);
+            Draw.Circle(630, 430, 4);
+        }
+        if (TOD <= 2)
+        {
+            Draw.FillColor = new ColorF(r3, g3, b3, c3);
+            Draw.Circle(380, 500, 3);
+            Draw.Circle(410, 500, 3);
+        }
         
         Graphics.Draw(Player, PlayerMovementX, 0);
         
         Graphics.Draw(Trees, position1);
-        
-        Graphics.Draw(Grass, position1);
         
         if (TOD >= 6)
         {
@@ -99,6 +130,8 @@ public class Game
                 }
             }
         }
+        
+        Graphics.Draw(Grass, position1);
     }
 }
 
