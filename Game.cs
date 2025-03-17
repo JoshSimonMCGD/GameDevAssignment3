@@ -18,11 +18,15 @@ public class Game
     // Texture Assets
     Texture2D Background = Graphics.LoadTexture("../../../Assets/BackgroundForest.png");
     Texture2D Trees = Graphics.LoadTexture("../../../Assets/HidingTrees.png");
-    Texture2D Player = Graphics.LoadTexture("../../../Assets/800x600_Wallpaper_Blue_Sky.png");
+    Texture2D Player = Graphics.LoadTexture("../../../Assets/PlayerCharacter.png");
     Texture2D Flower = Graphics.LoadTexture("../../../Assets/800x600_Wallpaper_Blue_Sky.png");     
         
     // Vactors
     Vector2 position1 = new Vector2(0, 0);
+    
+    float PlayerMovementX = 100f;
+    float PlayerMovementY = 100f;
+    float PlayerSpeed = 3.5f;
   
     public void Setup()
     {
@@ -49,6 +53,11 @@ public class Game
         
         float TOD2 = 6 * (1 - (float)Math.Cos(Math.PI * _timeofday / 12));
         int FlowerSpawnRate = Random.Integer(0, 30);
+
+        if (Input.IsKeyboardKeyDown(KeyboardInput.D))
+            PlayerMovementX += PlayerSpeed;  // Move right
+        if (Input.IsKeyboardKeyDown(KeyboardInput.A))
+            PlayerMovementX -= PlayerSpeed;  // Move left
             
         // Color Variables
         // Sky
@@ -73,7 +82,7 @@ public class Game
         Graphics.Draw(Background, position1);
         
         
-        
+        Graphics.Draw(Player, PlayerMovementX, 0);
         
         Graphics.Draw(Trees, position1);
         
@@ -84,13 +93,13 @@ public class Game
                 for (int i = 0; i < FlowerCount; i++)
                 {
                     Draw.FillColor = Color.Green;
-                    Draw.Rectangle(FlowerPositionX[i] - 1, 510, 3, 40);
+                    Draw.Rectangle(FlowerPositionX[i] - 1, 530, 3, 40);
                     
                     Draw.FillColor = Color.Red;
-                    Draw.Circle(FlowerPositionX[i], 510, 15); 
+                    Draw.Circle(FlowerPositionX[i], 530, 15); 
                     
                     Draw.FillColor = Color.Yellow;
-                    Draw.Circle(FlowerPositionX[i], 510, 7);
+                    Draw.Circle(FlowerPositionX[i], 530, 7);
                 }
             }
         }
