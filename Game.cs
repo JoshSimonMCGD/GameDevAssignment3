@@ -25,6 +25,7 @@ public class Game
     bool isNight = false;
     bool isDead = false;
     bool isVictory = false;
+    bool isTitleScreen = true;
 
     // Texture Assets
     Texture2D Background = Graphics.LoadTexture("../../../Assets/BackgroundForest.png");
