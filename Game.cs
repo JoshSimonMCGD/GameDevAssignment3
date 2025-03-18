@@ -111,14 +111,14 @@ public class Game
             isPlaying = false; // Declarations for audio
         }
 
-        // Night Cycle Music
+        // Night Cycle FX
         
         if (TOD >= 4)
         {
             Audio.Play(NightFX);
         }
 
-        // Day Cycle Music
+        // Day Cycle FX
         
         if (TOD <= 4)
         {
