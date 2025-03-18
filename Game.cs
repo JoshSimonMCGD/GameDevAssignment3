@@ -6,23 +6,17 @@ namespace MohawkGame2D;
 
 public class Game
 {
-    SafeZone[] safeZones;
+    SafeZone[] safeZones; // Safezone Encapsulation
     
-    float flowerSpawnTime = 0;
-    float flowerSpawnInterval = Random.Float(2f, 6f); // Adjust this to control spawn frequency
-    int maxFlowers = 10; // Max number of flowers on screen
+    float flowerSpawnTime = 0;  // Starts flower spawn timer
+    float flowerSpawnInterval = Random.Float(2f, 6f); // Adjust to control spawn frequency
 
-    float _timeofday;
-
-    // Framecount Variable.
-    int frameCount = 0;
-    int Score = 0;
-
-    float BGX = 0;
-    float BGY = 600;
-
-    int FlowerCount = 10;
-    int[] FlowerPositionX;
+    float _timeofday;  // Day - Night cycle main variable
+    
+    int Score = 0;  // Score
+    
+    int FlowerCount = 10; // Max number of flowers on screen
+    int[] FlowerPositionX; // Flower position array
 
     // Bools
     bool isPlaying = false;
@@ -52,10 +46,10 @@ public class Game
     // Vectors
     Vector2 position1 = new Vector2(0, 0);
 
-    // Floats
+    // Player Movement
     float PlayerMovementX = 300f;
     float PlayerSpeed = 3f;
-
+    
     public void Setup()
     {
         Window.SetTitle("Dark Forest Quest");
@@ -63,62 +57,69 @@ public class Game
 
         Draw.LineSize = 1;
         
-        FlowerPositionX = new int[FlowerCount];
+        FlowerPositionX = new int[FlowerCount];  // Flower Array Setup
         for (int i = 0; i < FlowerCount; i++)
         {
-            FlowerPositionX[i] = -1; // Mark as empty
+            FlowerPositionX[i] = -1; // Marks as empty
         }
 
-        Audio.Play(Day1FX);
+        Audio.Play(Day1FX); // Intro Audio
 
-        safeZones = new SafeZone[2];
-
+        // Safezones Setup
+        
+        safeZones = new SafeZone[2];  
         safeZones[0] = new SafeZone(70, 80);
         safeZones[1] = new SafeZone(650, 80);
     }
 
     public void Update()
     {
-        bool isMoving = false;
-        bool isSafe = true;
+        bool isMoving = false;  // Movement Variable
+        bool isSafe = true;  // Death Variable
 
-        _timeofday += Time.DeltaTime / 1.2f;
+        _timeofday += Time.DeltaTime / 1.2f;  // Program's proportionality to Time
 
-        float TOD = 6 * (1 + (float)Math.Cos(Math.PI * _timeofday / 12));
+        float TOD = 6 * (1 + (float)Math.Cos(Math.PI * _timeofday / 12));  // Oscillating Value between 12-0 (used for day/night cycle)
         
-        float TOD2 = 6 * (1 - (float)Math.Cos(Math.PI * _timeofday / 12));
+        float TOD2 = 6 * (1 - (float)Math.Cos(Math.PI * _timeofday / 12)); // Oscillating Value between 0-12 (just in case)
 
+        // Player movement
+        
         if (Input.IsKeyboardKeyDown(KeyboardInput.D))
         {
             PlayerMovementX += PlayerSpeed; // Move right
-            isMoving = true;
+            isMoving = true; // Declarations for audio
         }
 
         if (Input.IsKeyboardKeyDown(KeyboardInput.A))
         {
             PlayerMovementX -= PlayerSpeed; // Move left
-            isMoving = true;
+            isMoving = true; // Declarations for audio
         }
 
         // Play the sound only if moving and not already playing
         if (isMoving && !isPlaying)
         {
             Audio.Play(WalkingFX);
-            isPlaying = true;
+            isPlaying = true; // Declarations for audio
         }
 
         // Stop the sound if no movement keys are pressed
         if (!isMoving && isPlaying)
         {
             Audio.Stop(WalkingFX);
-            isPlaying = false;
+            isPlaying = false; // Declarations for audio
         }
 
+        // Night Cycle Music
+        
         if (TOD >= 4)
         {
             Audio.Play(NightFX);
         }
 
+        // Day Cycle Music
+        
         if (TOD <= 4)
         {
             Audio.Play(DayFX);
@@ -155,6 +156,8 @@ public class Game
         // Remove Tint Color
         ColorF RemoveTint = new ColorF(1f, 1f, 1f);
 
+        // Monster Eyes
+        
         if (TOD <= 2.5)
         {
             Draw.FillColor = new ColorF(r3, g3, b3, c3);
@@ -175,10 +178,10 @@ public class Game
             Draw.Circle(380, 500, 3);
             Draw.Circle(410, 500, 3);
         }
+        
+        Graphics.Draw(Player, PlayerMovementX, 470); // Player Character
 
-        Graphics.Draw(Player, PlayerMovementX, 470);
-
-        Graphics.Draw(Trees, position1);
+        Graphics.Draw(Trees, position1);  // Forefront Trees
         
         // References for SafeZone Hitboxes
         //Draw.FillColor = Color.Yellow;
@@ -215,9 +218,9 @@ public class Game
             }
         }
 
-        Graphics.Draw(Grass, position1);
+        Graphics.Draw(Grass, position1); // Forefront Grass
 
-        Draw.FillColor = Color.White;
+        Draw.FillColor = Color.White;  // Score
         Text.Draw("Score: " + Score, 600, 30);
         
         // Check for flower collection
@@ -245,7 +248,7 @@ public class Game
                 }
             }
         }
-        if (isVictory)
+        if (isVictory)  // Victory Screen
         {
             Audio.Stop(DayFX);
             Audio.Stop(NightFX);
@@ -277,12 +280,12 @@ public class Game
                 }
             }
 
-            if (!isSafe)
+            if (!isSafe) // Death Check
             {
                 isDead = true;
             }
 
-            if (isDead)
+            if (isDead)  // Death Screen
             {
                 _timeofday = -10;
                 
